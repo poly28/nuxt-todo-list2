@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app>
-      <v-app-bar dense app>
+      <v-app-bar dense app color="green">
         <v-app-bar-title class="ml-5">
           Todoリスト
         </v-app-bar-title>
@@ -34,7 +34,7 @@
           <!-- todo -->
           <!-- expantion panelの高度なカスタマイズ実装-->
           <!-- https://vuetifyjs.com/ja/components/expansion-panels/#section-9ad85ea6306a4f7f304465b9 -->
-          <v-expansion-panels>
+          <!-- <v-expansion-panels>
             <v-expansion-panel
               v-for="(todo, index) in filteredList"
               :key="todo.id"
@@ -45,26 +45,36 @@
                   <template>
                     {{ todo.task }}
                   </template>
-                  <button @click="deleteTask(index)" class="mdi-plus-thick">
+                  <v-btn icon="mdi-plus-thick"></v-btn>
+                  <button @click="deleteTask(index)">
                     削除
                   </button>
                 </span>
               </v-expansion-panel-header>
               <v-expansion-panel-content> - </v-expansion-panel-content>
             </v-expansion-panel>
-          </v-expansion-panels>
+          </v-expansion-panels> -->
           <!-- <ul>
-          <li v-for="(todo, index) in filteredList" :key="todo.id">
-            <span :class="{ done: todo.isDone }">
-              <input type="checkbox" v-model="todo.isDone" />
-              {{ todo.id }} , {{ todo.task }}
-            </span>
-            <button @click="deleteTask(index)">削除</button>
-          </li>
-        </ul> -->
+            <li v-for="(todo, index) in filteredList" :key="todo.id">
+              <span :class="{ done: todo.isDone }">
+                <input type="checkbox" v-model="todo.isDone" />
+                {{ todo.id }} ： {{ todo.task }}
+              </span>
+              <button class="delete" @click="deleteTask(index)">×</button>
+            </li>
+          </ul> -->
+
+          <v-data-table
+            :headers="headers"
+            :items="filteredList"
+            :items-per-page="10"
+            class="elevation-1"
+          >
+            <template></template>
+          </v-data-table>
         </section>
         <!-- デバッグ -->
-        <!-- <pre>{{ $data }}</pre> -->
+        <pre>{{ $data }}</pre>
         <!-- デバッグ -->
       </v-main>
     </v-app>
@@ -90,6 +100,12 @@ export default {
   data: function() {
     return {
       todos: [],
+      headers: [
+        { text: "check", value: "check" },
+        { text: "id", value: "id" },
+        { text: "task", value: "task" },
+        { text: "detail", value: "detail" }
+      ],
       input: {
         text: "",
         check: true
@@ -125,16 +141,32 @@ export default {
   },
   computed: {
     filteredList() {
-      let filteredTodos = this.todos;
+      let idTodos = this.todos;
 
-      // IDの整合性を保つための処理
-      // タスクを削除した際に、todo配列のidを再度振り分けるための処理
-      for (let i = 0; i < filteredTodos.length; i++) {
-        filteredTodos[i].id = i + 1;
+      // 【自動処理：ID再振り分け】
+      // タスクを削除した際に、todo配列のidを再度振り分ける
+      for (let i = 0; i < idTodos.length; i++) {
+        idTodos[i].id = i + 1;
       }
 
+      // 【自動処理：未完了、完了の自動ソート】
+      // 未完了タスクを配列に格納する
+      // let sortTodos = [];
+      // for (let i = 0; i < idTodos.length; i++) {
+      //   if (idTodos[i].isDone === false) {
+      //     sortTodos.push(idTodos[i]);
+      //   }
+      // }
+
+      // 完了タスクを配列に格納する
+      // for (let i = 0; i < idTodos.length; i++) {
+      //   if (idTodos[i].isDone === true) {
+      //     sortTodos.push(idTodos[i]);
+      //   }
+      // }
+
       // 最終的なtodo配列を返却する
-      return filteredTodos;
+      return idTodos;
     }
   }
 };
@@ -147,5 +179,8 @@ export default {
 .done {
   text-decoration: line-through;
   color: gray;
+}
+.delete {
+  border: 1px solid black;
 }
 </style>
