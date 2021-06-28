@@ -42,7 +42,7 @@
 
           <v-data-table
             :headers="headers"
-            :items="filteredList"
+            :items="todos"
             :items-per-page="10"
             class="elevation-1"
           >
@@ -185,6 +185,7 @@ export default {
     },
     // 削除ボタンによりタスクを削除する
     deleteTask(index) {
+      console.log("index:" + index);
       this.todos.splice(index, 1);
     }
   },
